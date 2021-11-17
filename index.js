@@ -3,6 +3,10 @@ const higherButton = document.getElementById("higher");
 const drawCardButton = document.getElementById("drawCard");
 const imageDiv = document.getElementById("imageDiv")
 
+let startValue;
+
+
+
 let deck = {};
 async function getDeck() {
   const res = await fetch(
@@ -20,13 +24,17 @@ async function drawCard() {
   const res = await fetch(
     "https://deckofcardsapi.com/api/deck/" + deck.deck_id + "/draw/?count=1"
   );
-  const data = await res.json();
+  const data = await res.json();    
   getValue(data);
+  startValue = data.cards[0].value;
+  
+  
+
   let nyVariabel = document.createElement("img")
     nyVariabel.src = data.cards[0].image
     imageDiv.appendChild(nyVariabel)
 
-  console.log(data.cards[0].value);
+  
   const cardDrawn = data.cards[0].value;
 
   return cardDrawn;
@@ -39,44 +47,61 @@ drawCardButton.addEventListener("click", async () => {
 
   document.getElementById("drawCard").disabled = true;
 });
-let lowerCard;
+
 
 lowerButton.addEventListener("click", async () => {
-    const res = await fetch(
+        const res = await fetch(
         "https://deckofcardsapi.com/api/deck/" + deck.deck_id + "/draw/?count=1"
-      );
-      const data = await res.json();
-      getValue(data);
-      let nyVariabel = document.createElement("img")
-      nyVariabel.src = data.cards[0].image
-        imageDiv.appendChild(nyVariabel)
+         );
+        const data = await res.json();
+        getValue(data);
+        let compareValue = data.cards[0].value;
+        imageDiv.children[0].setAttribute("src", data.cards[0].image)
     
-      console.log(data.cards[0].value);
-      const cardDrawn = data.cards[0].value;
-    
-      return cardDrawn;
+        
+
+
+        if(startValue < compareValue ){
+            alert("Game Over")
+            
+        }
+
+        startValue = data.cards[0].value;
+        
+        
+        
+        
+
+        
+      
 });
-let higherCard;
+
 higherButton.addEventListener("click", async () => {
     const res = await fetch(
         "https://deckofcardsapi.com/api/deck/" + deck.deck_id + "/draw/?count=1"
-      );
-      const data = await res.json();
-      getValue(data);
-      let nyVariabel = document.createElement("img")
-      nyVariabel.src = data.cards[0].image
-        imageDiv.appendChild(nyVariabel)
+        );
+        const data = await res.json();
+        getValue(data);
+        let compareValue = data.cards[0].value;
+        imageDiv.children[0].setAttribute("src", data.cards[0].image)
+        
+
+        if(startValue > compareValue){
+            alert("Game Over")
+            
+        }
+
+        startValue = data.cards[0].value;
     
-      console.log(data.cards[0].value);
-      const cardDrawn = data.cards[0].value;
-    
-      return cardDrawn;
+
+        
+        
+        
+           
+       
 });
 
-async function compareCard() {
-  if (lowercard > higherCard) {
-  }
-}
+
 
 function getValue(data) {
   switch (data.cards[0].value) {
@@ -96,5 +121,3 @@ function getValue(data) {
       data.cards[0].value = Number(data.cards[0].value);
   }
 }
-
-
